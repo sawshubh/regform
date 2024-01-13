@@ -355,7 +355,6 @@ function getLabelUI(obj) {
 function setupUITrigger() {
   $("body").on("click", "#registerButton", function () {
     const userInputObj = fetchUserInput();
-    console.log(userInputObj);
 
     if (!validateUserInput(userInputObj)) {
       return;
@@ -370,7 +369,6 @@ function setupUITrigger() {
 
   $("body").on("click", ".field-values", function () {
     const recId = $(this).attr("recid");
-    // console.log(recId);
     displayRecord(recId);
     $(".errors").remove();
   });
@@ -391,14 +389,12 @@ function fetchUserInput() {
         fieldValue = fieldValue.replaceAll("-", "/");
       }
       userInputObj[obj.fieldId] = fieldValue;
-      console.log(fieldValue);
     }
 
     if (obj.fieldType === "radio") {
       fieldValue = $("body")
         .find("input[name=" + obj.fieldId + "]:checked")
         .val();
-      // console.log(fieldValue);
       userInputObj[obj.fieldId] = obj.options[fieldValue];
     }
 
@@ -406,7 +402,6 @@ function fetchUserInput() {
       fieldValue = $("body")
         .find("#" + obj.fieldId)
         .val();
-      // console.log(fieldValue);
       userInputObj[obj.fieldId] = fieldValue;
     }
 
@@ -417,13 +412,11 @@ function fetchUserInput() {
         .each(function () {
           fieldValue.push($(this).val());
         });
-      // console.log(fieldValue);
       userInputObj[obj.fieldId] = fieldValue;
     }
 
     if (obj.fieldType === "multiple-select") {
       fieldValue = $("#" + obj.fieldId).val();
-      // console.log(fieldValue);
       userInputObj[obj.fieldId] = fieldValue;
     }
 
@@ -431,24 +424,11 @@ function fetchUserInput() {
       fieldValue = $("body")
         .find($("input[name=" + obj.fieldId))
         .is(":checked");
-      console.log(fieldValue);
       userInputObj[obj.fieldId] = fieldValue;
     }
-
-    // if (obj.fieldType === "file") {
-    //   let filePath = $("#" + obj.fieldId).val();
-    //   let fieldValue = getFileName(filePath);
-    //   // console.log(fieldValue);
-    //   userInputObj[obj.fieldId] = fieldValue;
-    // }
   });
   return userInputObj;
 }
-
-// function getFileName(filePath) {
-//   const fileName = filePath.split("\\").pop().split("/").pop();
-//   return fileName;
-// }
 
 function validateUserInput(userInputObj) {
   let isValidated = true;
@@ -550,7 +530,6 @@ function validateUserInput(userInputObj) {
       inputObj.isUnique !== undefined &&
       !validateIsUnique(inputObj, fieldValue, userInputObj)
     ) {
-      // console.log("if block of validateIsUnique");
       isValidated = false;
       $("#" + inputObj.fieldId + "-div").haml([
         [
@@ -560,8 +539,6 @@ function validateUserInput(userInputObj) {
         ],
       ]);
     }
-
-    // console.log(inputObj.customValidator);
   });
   return isValidated;
 }
@@ -646,7 +623,6 @@ function validateValueType(inputObj, fieldValue) {
     }
 
     if (inputObj.valueType === "boolean") {
-      console.log(typeof fieldValue);
       if (fieldValue === "true" || fieldValue === "false") {
         return true;
       } else {
@@ -684,16 +660,13 @@ function validateDate(dateValue) {
 function validateIsUnique(inputObj, fieldValue, userInputObj) {
   const fieldID = inputObj.fieldId,
     recID = $("#recid").val() === "" ? 0 : parseInt($("#recid").val(), 10);
-  // console.log(recID);
   const rowID = userInputObj.id;
-  // console.log(rowID);
   let isUnique = true;
 
   if (rowID === undefined) {
     $.each(dataObjList, function (_, dataObj) {
       if (dataObj[fieldID] === fieldValue && dataObj.id !== recID) {
         isUnique = false;
-        console.log(inputObj.fieldLabel + " already exist");
         return false; // break
       }
     });
@@ -701,44 +674,12 @@ function validateIsUnique(inputObj, fieldValue, userInputObj) {
     $.each(dataObjList, function (_, dataObj) {
       if (dataObj[fieldID] === fieldValue && dataObj.id !== rowID) {
         isUnique = false;
-        console.log(inputObj.fieldLabel + " already exist");
         return false; // break
       }
     });
   }
   return isUnique;
 }
-
-// function customValidation(inputObj, fieldValue) {
-//   if (fieldValue !== "") {
-//     if (!validateEmailFormat(fieldValue)) {
-//       return false;
-//     }
-//   }
-//   return true;
-// }
-
-// function validateEmailFormat(email) {
-//   const emailValidateReg =
-//     /^\(?([^@.\!\-#+ ]([A-Za-z0-9.+]?))+[^./@+][@][a-zA-Z0-9]+[-_]?[a-zA-Z0-9]+\.[a-zA-Z]{2,4}(\.([a-zA-Z]{2,4}))?/g;
-
-//   if (!emailValidateReg.test(email)) {
-//     return false;
-//   }
-//   return true;
-// }
-
-// function validateEligibleUser(dob, listOfErrors) {
-//   const userBirthYear = dob.slice(6, 10);
-//   const year = parseInt(userBirthYear, 10);
-
-//   if (year > 2004) {
-//     errMsg = "you are not eligible to register, minimum age should be 18";
-//     listOfErrors.push(errMsg);
-//     return errMsg;
-//   }
-//   return "";
-// }
 
 function initializeIDB() {
   iDB = new Dexie("candidateDB");
@@ -754,8 +695,6 @@ function getExistingDataInTable() {
 
   iDB.candidate.toArray().then(function (dbDataObjList) {
     dataObjList = dbDataObjList;
-    // console.log(dataObjList);
-    // $("#list-table").haml(getTableData());
     populateGridTable();
     refreshGrid();
   });
@@ -841,7 +780,6 @@ function displayRecord(recId) {
 }
 
 function displayDataObj(dataObj) {
-  // console.log(dataObj);
   $("body").find("#recid").val(dataObj.id);
   $.each(formInputObjList, function (_, inputObj) {
     let fieldValue = dataObj[inputObj.fieldId];
@@ -849,12 +787,9 @@ function displayDataObj(dataObj) {
       if (fieldValue.includes("/")) {
         const year = fieldValue.slice(6, 10);
         const monthDay = fieldValue.slice(0, 5);
-        // console.log(monthDay);
-        // console.log(year);
         fieldValue = year + "/" + monthDay;
         fieldValue = fieldValue.split("/").join("-");
       }
-      // console.log(fieldValue);
     }
 
     if (
@@ -865,19 +800,16 @@ function displayDataObj(dataObj) {
       $("body")
         .find("#" + inputObj.fieldId)
         .val(fieldValue);
-      // console.log(fieldValue);
     }
     if (inputObj.fieldType === "multiple-select") {
       if (typeof fieldValue === "string") {
         fieldValue = fieldValue.split(",");
-        // console.log(fieldValue);
       }
       $("body")
         .find("#" + inputObj.fieldId)
         .val(fieldValue);
     }
     if (inputObj.fieldType === "radio") {
-      // console.log(inputObj.fieldId);
       $("body")
         .find(
           "input[name=" +
@@ -890,7 +822,6 @@ function displayDataObj(dataObj) {
     }
 
     if (inputObj.fieldType === "boolean") {
-      console.log(fieldValue);
       if (fieldValue) {
         $("body")
           .find("input[name=" + inputObj.fieldId + "]")
@@ -1037,7 +968,6 @@ function cellValueChanged() {
     const userInputObj = args.item;
     if (!validateUserInput(userInputObj)) {
       alert("Error in grid value");
-      console.log("Error in Grid");
       undo();
       return;
     }
@@ -1047,7 +977,6 @@ function cellValueChanged() {
 }
 
 function columnValueFormatter(row, cell, value, columnDef, dataContext) {
-  // console.log(dataContext);
   return (
     "<a class=field-values href=# style=color:Black recid=" +
     dataContext.id +
@@ -1070,15 +999,10 @@ function refreshGrid() {
 }
 
 function saveUpdatedGridToDB(userInputObj) {
-  console.log(userInputObj.id);
   iDB.candidate
     .put(userInputObj)
-    .then(() => {
-      // console.log("referesh indexedDB to see changes");
-    })
-    .catch(() => {
-      // console.log("");
-    });
+    .then(() => {})
+    .catch(() => {});
 }
 
 function getOptions(obj) {
@@ -1286,7 +1210,6 @@ class MultiSelectDropdownEditor {
 
     this.handleKeyDown = function (e) {
       if (e.which == $.ui.keyCode.ENTER && e.ctrlKey) {
-        console.log(scope);
         scope.save();
       } else if (e.which == $.ui.keyCode.ESCAPE) {
         e.preventDefault();
@@ -1376,14 +1299,12 @@ function getChkBoxDataList(args) {
     }
   });
 
-  // console.log(args);
   if (args.column.id === "preferredTiming") {
     const timeData = {
       AllValues: dropdownListData,
       SelectedValues: args.item.preferredTiming,
     };
 
-    // console.log(timeData);
     return timeData;
   }
 }

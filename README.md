@@ -24,7 +24,7 @@
 
 ## **Benefits**
 
-- **Offline Accessibility:** As the data is stored locally, users can access and use the registration form even when offline, with the data syncing to the server when a connection is reestablished.
+- **Offline Accessibility:** As the data is stored locally, users can access and use the registration form even when offline.
 
 - **Fast and Responsive:** The integration of SlickGrid ensures a fast and responsive user interface, allowing for smooth data entry and interaction.
 
